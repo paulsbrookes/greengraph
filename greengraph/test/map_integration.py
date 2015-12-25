@@ -6,14 +6,6 @@ from matplotlib import image as img
 from StringIO import StringIO
 import numpy as np
 
-base="http://maps.googleapis.com/maps/api/staticmap?"
-
-[lat, long] = [51.0, 0.0]
-patch_get = Mock()
-patch_get.content = ''
-
-[left,bottom,right,top] = [10,10,60,60]
-
 def green_box(left,bottom,right,top):
     image_array = np.zeros([400,400,3])
     image_array[:,:,:] = 1
@@ -24,15 +16,31 @@ def green_box(left,bottom,right,top):
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
-#image_array = img.imread('image.png')
-image_array = green_box(left,bottom,right,top)
-patch_imread = Mock(return_value=image_array)
+def box_test(left,bottom,right,top):
+    [lat, long] = [51.0, 0.0]
+    image_array = green_box(left,bottom,right,top)
+    patch_imread = Mock(return_value=image_array)
+    patch_get = Mock()
+    patch_get.content = ''
+    with patch.object(requests,'get',patch_get) as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(lat, long)
+    assert my_map.count_green() == box_count(left,bottom,right,top)
+    return None
 
-with patch.object(requests,'get',patch_get) as mock_get:
-    with patch.object(img,'imread',patch_imread) as mock_imread:
-        my_map = Map(lat, long)
+box_test(10,10,60,60)
 
-mock_get.assert_called_with(
+def default_params_test():
+    [lat, long] = [51.0, 0.0]
+    [left,bottom,right,top]=[0,0,0,0]
+    image_array = green_box(left,bottom,right,top)
+    patch_imread = Mock(return_value=image_array)
+    patch_get = Mock()
+    patch_get.content = ''
+    with patch.object(requests,'get',patch_get) as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(lat, long)
+    mock_get.assert_called_with(
         "http://maps.googleapis.com/maps/api/staticmap?",
         params={
             'sensor':'false',
@@ -43,5 +51,6 @@ mock_get.assert_called_with(
             'maptype':'satellite'
         }
     )
+    return None
 
-assert my_map.count_green() == 2500
+default_params_test()
