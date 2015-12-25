@@ -13,11 +13,16 @@ patch_get = Mock()
 patch_get.content = ''
 
 [left,bottom,right,top] = [10,10,60,60]
-image_array = np.zeros([400,400,3])
-image_array[:,:,:] = 1
-image_array[left:right,bottom:top,0] = 0
-image_array[left:right,bottom:top,2] = 0
+
+def green_box(left,bottom,right,top):
+    image_array = np.zeros([400,400,3])
+    image_array[:,:,:] = 1
+    image_array[left:right,bottom:top,0] = 0
+    image_array[left:right,bottom:top,2] = 0
+    return image_array
+
 #image_array = img.imread('image.png')
+image_array = green_box(left,bottom,right,top)
 patch_imread = Mock(return_value=image_array)
 
 with patch.object(requests,'get',patch_get) as mock_get:
