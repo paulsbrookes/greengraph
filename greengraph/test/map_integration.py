@@ -7,7 +7,12 @@ from StringIO import StringIO
 import numpy as np
 
 def green_box(left,bottom,right,top,size=(400,400)):
-    image_array = np.zeros([size(0),size(1),3])
+    if not  (0 <= left <= right < size[0] and \
+            0 <= bottom <= top < size[1]):
+                raise ValueError(
+                    "Require 0 <= left <= right < " + str(size[0]) + " and 0 <="
+                    "bottom <= top < " + str(size[1]) + ".")
+    image_array = np.zeros([size[0],size[1],3])
     image_array[:,:,:] = 1
     image_array[left:right,bottom:top,0] = 0
     image_array[left:right,bottom:top,2] = 0
@@ -16,9 +21,9 @@ def green_box(left,bottom,right,top,size=(400,400)):
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
-def box_test(left,bottom,right,top):
-    [lat, long] = [51.0, 0.0]
-    image_array = green_box(left,bottom,right,top)
+def box_test(left,bottom,right,top,size=(400,400)):
+    [lat, long] = [0.0, 0.0]
+    image_array = green_box(left,bottom,right,top,size)
     patch_imread = Mock(return_value=image_array)
     patch_get = Mock()
     patch_get.content = ''
@@ -30,11 +35,11 @@ def box_test(left,bottom,right,top):
 
 box_test(10,10,60,60)
 box_test(0,0,0,0)
-box_test(1,1,0,0)
+box_test(0,0,1,1)
 box_test(0,0,400,400)
 
 def default_params_test():
-    [lat, long] = [51.0, 0.0]
+    [lat, long] = [0.0, 0.0]
     [left,bottom,right,top]=[0,0,0,0]
     image_array = green_box(left,bottom,right,top)
     patch_imread = Mock(return_value=image_array)
