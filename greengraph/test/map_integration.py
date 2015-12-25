@@ -21,6 +21,9 @@ def green_box(left,bottom,right,top):
     image_array[left:right,bottom:top,2] = 0
     return image_array
 
+def box_count(left,bottom,right,top):
+    return abs(right-left)*abs(top-bottom)
+
 #image_array = img.imread('image.png')
 image_array = green_box(left,bottom,right,top)
 patch_imread = Mock(return_value=image_array)
