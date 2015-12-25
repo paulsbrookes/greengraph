@@ -6,8 +6,8 @@ from matplotlib import image as img
 from StringIO import StringIO
 import numpy as np
 
-def green_box(left,bottom,right,top):
-    image_array = np.zeros([400,400,3])
+def green_box(left,bottom,right,top,size=(400,400)):
+    image_array = np.zeros([size(0),size(1),3])
     image_array[:,:,:] = 1
     image_array[left:right,bottom:top,0] = 0
     image_array[left:right,bottom:top,2] = 0
@@ -29,6 +29,9 @@ def box_test(left,bottom,right,top):
     return None
 
 box_test(10,10,60,60)
+box_test(0,0,0,0)
+box_test(1,1,0,0)
+box_test(0,0,400,400)
 
 def default_params_test():
     [lat, long] = [51.0, 0.0]
