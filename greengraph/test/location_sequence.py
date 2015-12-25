@@ -1,5 +1,7 @@
 from greengraph import Greengraph
 import numpy as np
+from mock import patch
+import requests
 
 mygraph=Greengraph('New York','Chicago')
 start = [0,0]
