@@ -40,11 +40,13 @@ def box_count(left,bottom,right,top):
 def multi_speckle(size=(400,400)):
     green_array = np.zeros([size[0],size[1],3])
     multi_array = np.zeros([size[0],size[1],3])
+    red_probability = 0.333
+    green_probability = 0.333
     for (x,y), value in np.ndenumerate(green_array[:,:,1]):
         ran = random()
-        if ran < 0.333:
+        if ran < red_probability:
             green_array[x,y,0], multi_array[x,y,0] = 0, 1
-        elif ran < 0.666:
+        elif ran < green_probability + red_probability:
             green_array[x,y,1], multi_array[x,y,1] = 1, 1
         else:
             green_array[x,y,2], multi_array[x,y,2] = 0, 1
