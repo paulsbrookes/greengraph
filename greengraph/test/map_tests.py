@@ -58,11 +58,11 @@ def default_params_test():
     return None
 
 def random_speckle(size=(400,400)):
-    image_array = np.zeros([size[0],size[1],3]) + 1
+    image_array = np.zeros([size[0],size[1],3])
     count = 0
     for (x,y), value in np.ndenumerate(image_array[:,:,1]):
         if random()>0.5:
-            (image_array[x,y,0],image_array[x,y,2]) = (0,0)
+            image_array[x,y,1] = 1
             count += 1
     return image_array, count
 
@@ -96,6 +96,7 @@ def show_green_test(size=(400,400)):
             my_map = Map(0,0)
     multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
     assert np.all(green_array == multi_array_green)
+
 
 default_params_test()
 show_green_test()

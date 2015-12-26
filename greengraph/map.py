@@ -22,7 +22,7 @@ class Map(object):
         self.image = requests.get(base, params=params).content # Fetch our PNG image data
         self.pixels= img.imread(StringIO(self.image)) # Parse our PNG image as a numpy array
 
-    def green(self, threshold):
+    def green(self, threshold = 1.1):
         # Use NumPy to build an element-by-element logical array
         greener_than_red = self.pixels[:,:,1] > threshold* self.pixels[:,:,0]
         greener_than_blue = self.pixels[:,:,1] > threshold*self.pixels[:,:,2]
