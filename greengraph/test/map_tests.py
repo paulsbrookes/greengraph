@@ -34,11 +34,6 @@ def box_test(left,bottom,right,top,size=(400,400)):
     assert my_map.count_green() == box_count(left,bottom,right,top)
     return None
 
-box_test(10,10,60,60)
-box_test(0,0,0,0)
-box_test(0,0,1,1)
-box_test(0,0,399,399)
-
 def default_params_test():
     [lat, long] = [51.0, 0.0]
     [left,bottom,right,top]=[0,0,0,0]
@@ -62,8 +57,6 @@ def default_params_test():
     )
     return None
 
-default_params_test()
-
 def random_speckle(size=(400,400)):
     image_array = np.zeros([size[0],size[1],3]) + 1
     count = 0
@@ -83,9 +76,6 @@ def count_green_test(size=(400,400)):
             my_map = Map(0,0)
     assert my_map.count_green() == count
     return None
-
-for x in range(10):
-    count_green_test()
 
 def multi_speckle(size=(400,400)):
     green_array = np.zeros([size[0],size[1],3])
@@ -109,4 +99,11 @@ def show_green_test(size=(400,400)):
     multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
     assert np.all(green_array == multi_array_green)
 
+default_params_test()
 show_green_test()
+box_test(10,10,60,60)
+box_test(0,0,0,0)
+box_test(0,0,1,1)
+box_test(0,0,399,399)
+for x in range(10):
+    count_green_test()
