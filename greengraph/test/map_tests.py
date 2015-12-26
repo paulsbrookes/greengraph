@@ -97,6 +97,24 @@ def show_green_test(size=(400,400)):
     multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
     assert np.all(green_array == multi_array_green)
 
+def single_colour_speckle(**kwargs):
+    colour = 1
+    if 'pixels' in kwargs.keys():
+        pixels = kwargs['pixels']
+    elif 'size' in kwargs.keys():
+        size = kwargs['size']
+        pixels = np.zeros([size[0],size[1],3])
+    else:
+        pixels = np.zeros([400,400,3])
+    if 'colour' in kwargs.keys():
+        colour = kwargs['colour']
+    count = 0
+    for (x,y), value in np.ndenumerate(pixels[:,:,0]):
+        if random()>0.5:
+            pixels[x,y,colour] = 1
+            count += 1
+    return pixels, count
+
 
 default_params_test()
 show_green_test()
