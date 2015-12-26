@@ -19,6 +19,29 @@ def green_box(left,bottom,right,top,size=(400,400)):
     image_array[left:right,bottom:top,2] = 0
     return image_array
 
+def colour_box(left,bottom,right,top,**kwargs):
+    colour = 1
+    if 'pixels' in kwargs.keys():
+        pixels = kwargs['pixels']
+    elif 'size' in kwargs.keys():
+        size = kwargs['size']
+        pixels = np.zeros([size[0],size[1],3])
+    else:
+        size = (400,400)
+        pixels = np.zeros([size[0],size[1],3])
+    if 'colour' in kwargs.keys():
+        colour = kwargs['colour']
+    if not  (0 <= left <= right < size[0] and \
+            0 <= bottom <= top < size[1]):
+                raise ValueError(
+                    "Require 0 <= left <= right < " + str(size[0]) + " and 0 <="
+                    "bottom <= top < " + str(size[1]) + ".")
+    image_array = np.zeros([size[0],size[1],3])
+    image_array[:,:,:] = 1
+    image_array[left:right,bottom:top,0] = 0
+    image_array[left:right,bottom:top,2] = 0
+    return image_array
+
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
@@ -110,7 +133,7 @@ def single_colour_speckle(**kwargs):
         colour = kwargs['colour']
     count = 0
     for (x,y), value in np.ndenumerate(pixels[:,:,0]):
-        if random()>0.5:
+        if random() > 0.5:
             pixels[x,y,colour] = 1
             count += 1
     return pixels, count
