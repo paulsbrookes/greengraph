@@ -19,10 +19,14 @@ def green_box(left,bottom,right,top,size=(400,400)):
     image_array[left:right,bottom:top,2] = 0
     return image_array
 
-def colour_box(left,bottom,right,top,**kwargs):
+def colour_box((left,bottom,right,top),**kwargs):
+
     colour = 1
+    intensity = 1
+
     if 'pixels' in kwargs.keys():
         pixels = kwargs['pixels']
+        size = (pixels.shape[0],pixels.shape[1])
     elif 'size' in kwargs.keys():
         size = kwargs['size']
         pixels = np.zeros([size[0],size[1],3])
@@ -31,23 +35,24 @@ def colour_box(left,bottom,right,top,**kwargs):
         pixels = np.zeros([size[0],size[1],3])
     if 'colour' in kwargs.keys():
         colour = kwargs['colour']
+    if 'intensity' in kwargs.keys():
+        intensity = kwargs['intensity']
+
     if not  (0 <= left <= right < size[0] and \
             0 <= bottom <= top < size[1]):
                 raise ValueError(
                     "Require 0 <= left <= right < " + str(size[0]) + " and 0 <="
                     "bottom <= top < " + str(size[1]) + ".")
-    image_array = np.zeros([size[0],size[1],3])
-    image_array[:,:,:] = 1
-    image_array[left:right,bottom:top,0] = 0
-    image_array[left:right,bottom:top,2] = 0
-    return image_array
+
+    pixels[left:right,bottom:top,colour] = intensity
+    return pixels
 
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
 def count_green_box_test(left,bottom,right,top,size=(400,400)):
     [lat, long] = [0.0, 0.0]
-    image_array = green_box(left,bottom,right,top,size)
+    image_array = colour_box((left,bottom,right,top),size=size)
     patch_imread = Mock(return_value=image_array)
     patch_get = Mock()
     patch_get.content = ''
@@ -60,7 +65,7 @@ def count_green_box_test(left,bottom,right,top,size=(400,400)):
 def default_params_test():
     [lat, long] = [51.0, 0.0]
     [left,bottom,right,top]=[0,0,0,0]
-    image_array = green_box(left,bottom,right,top)
+    image_array = colour_box((left,bottom,right,top))
     patch_imread = Mock(return_value=image_array)
     patch_get = Mock()
     patch_get.content = ''
@@ -138,6 +143,29 @@ def single_colour_speckle(**kwargs):
             count += 1
     return pixels, count
 
+def green_test():
+    box1 = (0,0,50,50)
+    box2 = (100,100,150,150)
+
+    pixels = colour_box(box1,intensity=0.5)
+    pixels = colour_box(box2,pixels=pixels,intensity=0.5)
+    pixels = colour_box(box1,pixels=pixels,intensity=0.25,colour=0)
+    pixels = colour_box(box2,pixels=pixels,intensity=0.75,colour=2)
+
+    truth_array1 = colour_box(box1,intensity=True)
+    truth_array2 = colour_box(box1,intensity=True)
+    truth_array2 = colour_box(box2,pixels=truth_array2,intensity=True)
+    truth_array3 = colour_box((0,0,0,0),intensity=True)
+
+    patch_imread = Mock(return_value=pixels)
+    with patch.object(requests,'get') as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(0,0)
+
+    assert np.all(truth_array2[:,:,1] == my_map.green(0))
+    assert np.all(truth_array1[:,:,1] == my_map.green(1))
+    assert np.all(truth_array3[:,:,1] == my_map.green(10))
+
 
 default_params_test()
 show_green_test()
@@ -147,3 +175,4 @@ count_green_box_test(0,0,1,1)
 count_green_box_test(0,0,399,399)
 for x in range(10):
     count_green_random_test()
+green_test()
