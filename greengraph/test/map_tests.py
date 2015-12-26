@@ -22,7 +22,7 @@ def green_box(left,bottom,right,top,size=(400,400)):
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
-def box_test(left,bottom,right,top,size=(400,400)):
+def count_green_box_test(left,bottom,right,top,size=(400,400)):
     [lat, long] = [0.0, 0.0]
     image_array = green_box(left,bottom,right,top,size)
     patch_imread = Mock(return_value=image_array)
@@ -60,15 +60,13 @@ def default_params_test():
 def random_speckle(size=(400,400)):
     image_array = np.zeros([size[0],size[1],3]) + 1
     count = 0
-
     for (x,y), value in np.ndenumerate(image_array[:,:,1]):
         if random()>0.5:
             (image_array[x,y,0],image_array[x,y,2]) = (0,0)
             count += 1
-
     return image_array, count
 
-def count_green_test(size=(400,400)):
+def count_green_random_test(size=(400,400)):
     image_array, count = random_speckle()
     patch_imread = Mock(return_value=image_array)
     with patch.object(requests,'get') as mock_get:
@@ -101,9 +99,9 @@ def show_green_test(size=(400,400)):
 
 default_params_test()
 show_green_test()
-box_test(10,10,60,60)
-box_test(0,0,0,0)
-box_test(0,0,1,1)
-box_test(0,0,399,399)
+count_green_box_test(10,10,60,60)
+count_green_box_test(0,0,0,0)
+count_green_box_test(0,0,1,1)
+count_green_box_test(0,0,399,399)
 for x in range(10):
-    count_green_test()
+    count_green_random_test()
