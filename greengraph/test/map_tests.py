@@ -7,18 +7,6 @@ from matplotlib import image as img
 from StringIO import StringIO
 import numpy as np
 
-def green_box(left,bottom,right,top,size=(400,400)):
-    if not  (0 <= left <= right < size[0] and \
-            0 <= bottom <= top < size[1]):
-                raise ValueError(
-                    "Require 0 <= left <= right < " + str(size[0]) + " and 0 <="
-                    "bottom <= top < " + str(size[1]) + ".")
-    image_array = np.zeros([size[0],size[1],3])
-    image_array[:,:,:] = 1
-    image_array[left:right,bottom:top,0] = 0
-    image_array[left:right,bottom:top,2] = 0
-    return image_array
-
 def colour_box((left,bottom,right,top),**kwargs):
 
     colour = 1
