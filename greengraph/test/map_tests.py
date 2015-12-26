@@ -8,7 +8,6 @@ from StringIO import StringIO
 import numpy as np
 
 def colour_box((left,bottom,right,top),**kwargs):
-
     colour = 1
     intensity = 1
 
@@ -38,59 +37,6 @@ def colour_box((left,bottom,right,top),**kwargs):
 def box_count(left,bottom,right,top):
     return abs(right-left)*abs(top-bottom)
 
-def count_green_box_test(left,bottom,right,top,size=(400,400)):
-    [lat, long] = [0.0, 0.0]
-    image_array = colour_box((left,bottom,right,top),size=size)
-    patch_imread = Mock(return_value=image_array)
-    patch_get = Mock()
-    patch_get.content = ''
-    with patch.object(requests,'get',patch_get) as mock_get:
-        with patch.object(img,'imread',patch_imread) as mock_imread:
-            my_map = Map(lat, long)
-    assert my_map.count_green() == box_count(left,bottom,right,top)
-    return None
-
-def default_params_test():
-    [lat, long] = [51.0, 0.0]
-    [left,bottom,right,top]=[0,0,0,0]
-    image_array = colour_box((left,bottom,right,top))
-    patch_imread = Mock(return_value=image_array)
-    patch_get = Mock()
-    patch_get.content = ''
-    with patch.object(requests,'get',patch_get) as mock_get:
-        with patch.object(img,'imread',patch_imread) as mock_imread:
-            my_map = Map(lat, long)
-    mock_get.assert_called_with(
-        "http://maps.googleapis.com/maps/api/staticmap?",
-        params={
-            'sensor':'false',
-            'zoom':10,
-            'size':'400x400',
-            'center':'51.0,0.0',
-            'style':'feature:all|element:labels|visibility:off',
-            'maptype':'satellite'
-        }
-    )
-    return None
-
-def random_speckle(size=(400,400)):
-    image_array = np.zeros([size[0],size[1],3])
-    count = 0
-    for (x,y), value in np.ndenumerate(image_array[:,:,1]):
-        if random()>0.5:
-            image_array[x,y,1] = 1
-            count += 1
-    return image_array, count
-
-def count_green_random_test(size=(400,400)):
-    image_array, count = random_speckle()
-    patch_imread = Mock(return_value=image_array)
-    with patch.object(requests,'get') as mock_get:
-        with patch.object(img,'imread',patch_imread) as mock_imread:
-            my_map = Map(0,0)
-    assert my_map.count_green() == count
-    return None
-
 def multi_speckle(size=(400,400)):
     green_array = np.zeros([size[0],size[1],3])
     multi_array = np.zeros([size[0],size[1],3])
@@ -103,15 +49,6 @@ def multi_speckle(size=(400,400)):
         else:
             green_array[x,y,2], multi_array[x,y,2] = 0, 1
     return multi_array, green_array
-
-def show_green_test(size=(400,400)):
-    multi_array, green_array = multi_speckle(size)
-    patch_imread = Mock(return_value=multi_array)
-    with patch.object(requests,'get') as mock_get:
-        with patch.object(img,'imread',patch_imread) as mock_imread:
-            my_map = Map(0,0)
-    multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
-    assert np.all(green_array == multi_array_green)
 
 def single_colour_speckle(**kwargs):
     colour = 1
@@ -153,6 +90,61 @@ def green_test():
     assert np.all(truth_array2[:,:,1] == my_map.green(0))
     assert np.all(truth_array1[:,:,1] == my_map.green(1))
     assert np.all(truth_array3[:,:,1] == my_map.green(10))
+    return None
+
+def count_green_box_test(left,bottom,right,top,size=(400,400)):
+    [lat, long] = [0.0, 0.0]
+    image_array = colour_box((left,bottom,right,top),size=size)
+    patch_imread = Mock(return_value=image_array)
+    patch_get = Mock()
+    patch_get.content = ''
+    with patch.object(requests,'get',patch_get) as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(lat, long)
+    assert my_map.count_green() == box_count(left,bottom,right,top)
+    return None
+
+def default_params_test():
+    [lat, long] = [51.0, 0.0]
+    [left,bottom,right,top]=[0,0,0,0]
+    image_array = colour_box((left,bottom,right,top))
+    patch_imread = Mock(return_value=image_array)
+    patch_get = Mock()
+    patch_get.content = ''
+    with patch.object(requests,'get',patch_get) as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(lat, long)
+    mock_get.assert_called_with(
+        "http://maps.googleapis.com/maps/api/staticmap?",
+        params={
+            'sensor':'false',
+            'zoom':10,
+            'size':'400x400',
+            'center':'51.0,0.0',
+            'style':'feature:all|element:labels|visibility:off',
+            'maptype':'satellite'
+        }
+    )
+    return None
+
+def count_green_random_test(size=(400,400)):
+    image_array, count = single_colour_speckle()
+    patch_imread = Mock(return_value=image_array)
+    with patch.object(requests,'get') as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(0,0)
+    assert my_map.count_green() == count
+    return None
+
+def show_green_test(size=(400,400)):
+    multi_array, green_array = multi_speckle(size)
+    patch_imread = Mock(return_value=multi_array)
+    with patch.object(requests,'get') as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(0,0)
+    multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
+    assert np.all(green_array == multi_array_green)
+    return None
 
 
 default_params_test()
