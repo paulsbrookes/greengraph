@@ -65,7 +65,7 @@ def default_params_test():
 default_params_test()
 
 def random_speckle(size=(400,400)):
-    image_array = np.zeros([400,400,3]) + 1
+    image_array = np.zeros([size[0],size[1],3]) + 1
     count = 0
 
     for (x,y), value in np.ndenumerate(image_array[:,:,1]):
@@ -86,3 +86,27 @@ def count_green_test(size=(400,400)):
 
 for x in range(10):
     count_green_test()
+
+def multi_speckle(size=(400,400)):
+    green_array = np.zeros([size[0],size[1],3])
+    multi_array = np.zeros([size[0],size[1],3])
+    for (x,y), value in np.ndenumerate(green_array[:,:,1]):
+        ran = random()
+        if ran < 0.333:
+            green_array[x,y,0], multi_array[x,y,0] = 0, 1
+        elif ran < 0.666:
+            green_array[x,y,1], multi_array[x,y,1] = 1, 1
+        else:
+            green_array[x,y,2], multi_array[x,y,2] = 0, 1
+    return multi_array, green_array
+
+def show_green_test(size=(400,400)):
+    multi_array, green_array = multi_speckle(size)
+    patch_imread = Mock(return_value=multi_array)
+    with patch.object(requests,'get') as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(0,0)
+    multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
+    assert np.all(green_array == multi_array_green)
+
+show_green_test()
