@@ -33,7 +33,8 @@ def green_between_test(steps=400):
     return None
 
 def location_sequence_test():
-    my_graph = Greengraph('New York','Chicago')
+    with patch.object(geopy.geocoders.GoogleV3,'geocode') as mock_geocode:
+        my_graph = Greengraph('New York','Chicago')
     start = [0,0]
     end = [1,1]
     array1 = np.array([start])

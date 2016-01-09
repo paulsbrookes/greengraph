@@ -63,3 +63,13 @@ def single_colour_speckle(**kwargs):
             pixels[x,y,colour] = 1
             count += 1
     return pixels, count
+
+def bearing((lat1,long1),(lat2,long2)):
+    lat1_r = lat1*np.pi/180.0
+    long1_r = long1*np.pi/180.0
+    lat2_r = lat2*np.pi/180.0
+    long2_r = long2*np.pi/180.0
+    y = np.sin(lat2_r-lat1_r)*np.cos(long2_r)
+    x = np.cos(long1_r)*np.sin(long2_r) \
+        - np.sin(long1_r)*np.cos(long2_r)*np.cos(lat2_r-lat1_r)
+    return np.arctan2(x,y)*180.0/np.pi
