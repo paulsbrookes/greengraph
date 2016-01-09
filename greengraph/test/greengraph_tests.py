@@ -4,6 +4,7 @@ from mock import patch, Mock
 from matplotlib import image as img
 import requests
 import geopy
+import numpy as np
 
 def geolocate_test():
     return_location = [[0,(1,2)]]
@@ -37,7 +38,7 @@ def location_sequence_test():
     end = [1,1]
     array1 = np.array([start])
     array2 = np.array([start, end])
-    assert not mygraph.location_sequence(start,end,0)
+    assert not my_graph.location_sequence(start,end,0)
     assert np.all(my_graph.location_sequence(start,end,1)==array1)
     assert np.all(my_graph.location_sequence(start,end,2)==array2)
     return None

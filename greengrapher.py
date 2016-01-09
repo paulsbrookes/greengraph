@@ -4,20 +4,23 @@ from matplotlib import pyplot as plt
 
 if __name__ == "__main__":
     parser = ArgumentParser(description = "Plot the amount of green space \
-        between two locations")
-    parser.add_argument('--start')
-    parser.add_argument('--end')
-    parser.add_argument('--steps')
-    parser.add_argument('--out')
+        between two locations.")
+    parser.add_argument('--steps', type=int, default=20, help='Number of steps \
+        plotted. Default value = 20.')
+    parser.add_argument('--out', default=False, help='Name of output \
+        file. "*.png" or "*.pdf"')
+    parser.add_argument('--start', type=str, default='London', help='Start \
+        location for plot. Default location is London.')
+    parser.add_argument('--end', type=str, default='Cambridge', help='End \
+        location of plot. Default location is Cambridge.')
     arguments= parser.parse_args()
-    if not arguments.steps:
-        arguments.steps = 20
     mygraph=Greengraph(arguments.start, arguments.end)
     data = mygraph.green_between(arguments.steps)
-    plt.plot(data)
-    plt.title('Green space versus location.')
-    plt.xlabel('Step.')
-    plt.ylabel('Number of green pixels.')
+    data_norm = [x/160000.0 for x in data]
+    plt.plot(data_norm)
+    plt.title('Green space between two locations.')
+    plt.xlabel('Step')
+    plt.ylabel('Fraction of green pixels')
     if arguments.out:
         plt.savefig(arguments.out)
     else:

@@ -6,6 +6,7 @@ import requests
 from matplotlib import image as img
 from StringIO import StringIO
 import numpy as np
+from test_tools import colour_box, multi_speckle, box_count, single_colour_speckle
 
 def green_test():
     box1 = (0,0,50,50)

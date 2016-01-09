@@ -8,6 +8,7 @@ class Greengraph(object):
         self.end=end
         self.geocoder=geopy.geocoders.GoogleV3(domain="maps.google.co.uk")
 
+
     def geolocate(self, place):
         return self.geocoder.geocode(place, exactly_one=False)[0][1]
 
