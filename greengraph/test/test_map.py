@@ -29,7 +29,7 @@ def green_test():
     assert np.all(truth_array2[:,:,1] == my_map.green(0))
     assert np.all(truth_array1[:,:,1] == my_map.green(1))
     assert np.all(truth_array3[:,:,1] == my_map.green(10))
-    return None
+
 
 def default_params_test():
     [lat, long] = [51.0, 0.0]
@@ -52,7 +52,7 @@ def default_params_test():
             'maptype':'satellite'
         }
     )
-    return None
+
 
 def count_green_random_test(size=(400,400),repeats=10):
     for i in range(10):
@@ -62,7 +62,7 @@ def count_green_random_test(size=(400,400),repeats=10):
             with patch.object(img,'imread',patch_imread) as mock_imread:
                 my_map = Map(0,0)
                 assert my_map.count_green() == count
-    return None
+
 
 def show_green_test(size=(400,400)):
     multi_array, green_array = multi_speckle(size)
@@ -72,7 +72,7 @@ def show_green_test(size=(400,400)):
             my_map = Map(0,0)
     multi_array_green = img.imread(StringIO(my_map.show_green()))[:,:,0:3]
     assert np.all(green_array == multi_array_green)
-    return None
+
 
 def count_green_box_test():
     assert map_count(10,10,60,60) == box_count(10,10,60,60)
