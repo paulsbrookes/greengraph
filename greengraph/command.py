@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 from argparse import ArgumentParser
 from greengraph import Greengraph
 from matplotlib import pyplot as plt
