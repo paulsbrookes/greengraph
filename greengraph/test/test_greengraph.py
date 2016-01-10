@@ -20,14 +20,17 @@ def geolocate_test():
 
 def green_between_test(steps=400):
     pixel_arrays = [colour_box((0,0,x,x)) for x in range(steps)]
-
     patch_imread = Mock()
     patch_imread.side_effect = pixel_arrays
+    return_location = [[0,(1,2)]]
+    patch_geocode = Mock(return_value = return_location)
 
     with patch.object(requests,'get') as mock_get:
         with patch.object(img,'imread',patch_imread) as mock_imread:
-            mygraph=Greengraph('New York','Chicago')
-            data = mygraph.green_between(steps)
+            with patch.object(geopy.geocoders.GoogleV3,'geocode',patch_geocode) \
+                as mock_geocode:
+                mygraph=Greengraph('New York','Chicago')
+                data = mygraph.green_between(steps)
 
     assert [box_count(0,0,x,x) for x in range(steps)] == data
     return None
