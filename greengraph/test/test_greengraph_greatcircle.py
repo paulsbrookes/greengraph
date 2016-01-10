@@ -6,6 +6,7 @@ import requests
 import geopy
 import numpy as np
 from tools import bearing
+from nose.tools import assert_almost_equal
 
 def location_sequence_bearing_test(start=[0,0],end=[0,179]):
     with patch.object(geopy.geocoders.GoogleV3,'geocode') as mock_geocode:
@@ -14,5 +15,5 @@ def location_sequence_bearing_test(start=[0,0],end=[0,179]):
     array2 = np.array([start, end])
     sequence = my_graph.location_sequence(start,end,20)
     bearing_sequence = [bearing(sequence[0],point) for point in sequence[1:]]
-    assert np.all([x == bearing_sequence[0] for x in bearing_sequence])
-    return None
+    for x in bearing_sequence:
+	assert_almost_equal(x, bearing_sequence[0], delta = 1e-6)
