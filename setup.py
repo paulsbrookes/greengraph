@@ -1,8 +1,11 @@
 from setuptools import setup, find_packages
 
 setup(
-    name = "greengraph",
-    version = "0.1",
+    name = "Greengraph",
+    version = "1.0 ",
     packages = find_packages(exclude=['*test']),
-    install_requires = ['geopy','numpy','matplotlib','requests']
+    license = "Apache",
+    author_email = 'paul.s.brookes@gmail.com',
+    install_requires = ['geopy','numpy','matplotlib','requests','nose'],
+    scripts = ['scripts/greengraph']
 )

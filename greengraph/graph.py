@@ -11,7 +11,7 @@ class Greengraph(object):
     def geolocate(self, place):
         return self.geocoder.geocode(place, exactly_one=False)[0][1]
 
-    def location_sequence(self, start,end,steps):
+    def location_sequence(self, start, end, steps):
       lats = np.linspace(start[0], end[0], steps)
       longs = np.linspace(start[1],end[1], steps)
       return np.vstack([lats, longs]).transpose()

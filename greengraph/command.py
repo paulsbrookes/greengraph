@@ -1,8 +1,9 @@
+#! /usr/bin/env python
 from argparse import ArgumentParser
 from greengraph import Greengraph
 from matplotlib import pyplot as plt
 
-if __name__ == "__main__":
+def process():
     parser = ArgumentParser(description = "Plot the amount of green space \
         between two locations.")
     parser.add_argument('--steps', type=int, default=20, help='Number of steps \
@@ -25,3 +26,6 @@ if __name__ == "__main__":
         plt.savefig(arguments.out)
     else:
         plt.show()
+
+if __name__ == "__main__":
+    process()
