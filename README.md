@@ -16,3 +16,14 @@ create a sequence of co-ordinates between two pairs of co-ordinates and calculat
 the fraction of green space at each of these locations.
 
 Greengraph comes with a command line interface. 
+
+usage: greengraph [-h] [--steps STEPS] [--out OUT] [--start START] [--end END]
+
+Plot the amount of green space between two locations.
+
+optional arguments:
+-h, --help     show this help message and exit
+--steps STEPS  Number of steps plotted. Default value = 20.
+--out OUT      Name of output file. "*.png" or "*.pdf"
+--start START  Start location for plot. Default location is London.
+--end END      End location of plot. Default location is Cambridge.
