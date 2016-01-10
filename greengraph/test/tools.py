@@ -1,5 +1,9 @@
 from random import random
 import numpy as np
+from mock import Mock, patch
+import requests
+from matplotlib import image as img
+from greengraph import Map
 
 def colour_box((left,bottom,right,top),**kwargs):
     colour = 1
@@ -73,3 +77,14 @@ def bearing((lat1,long1),(lat2,long2)):
     x = np.cos(long1_r)*np.sin(long2_r) \
         - np.sin(long1_r)*np.cos(long2_r)*np.cos(lat2_r-lat1_r)
     return np.arctan2(x,y)*180.0/np.pi
+
+def map_count(left,bottom,right,top,size=(400,400)):
+    [lat, long] = [0.0, 0.0]
+    image_array = colour_box((left,bottom,right,top),size=size)
+    patch_imread = Mock(return_value=image_array)
+    patch_get = Mock()
+    patch_get.content = ''
+    with patch.object(requests,'get',patch_get) as mock_get:
+        with patch.object(img,'imread',patch_imread) as mock_imread:
+            my_map = Map(lat, long)
+    return my_map.count_green()
